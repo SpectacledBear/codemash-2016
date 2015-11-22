@@ -42,12 +42,18 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
         private static void PopulateData()
         {
-            // throw new NotImplementedException();
-            string queryFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CREATE_SCRIPT);
-            string query = File.ReadAllText(queryFilePath);
+            string query = LoadQueryFromFile(CREATE_SCRIPT);
             SQLiteCommand command = new SQLiteCommand(query, _database);
 
             int result = command.ExecuteNonQuery();
+        }
+
+        private static string LoadQueryFromFile(string filename)
+        {
+            string queryFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+            string query = File.ReadAllText(queryFilePath);
+
+            return query;
         }
     }
 }
