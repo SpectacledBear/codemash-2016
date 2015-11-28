@@ -8,7 +8,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
     public class SqliteDataManager
     {
-        private SQLiteConnection _sqliteConnection = SqliteHandler.GetConnection();
+        private SQLiteConnection _sqliteConnection = PersistentSqliteDatabase.Connection();
 
         public SqliteModel GetModels()
         {
