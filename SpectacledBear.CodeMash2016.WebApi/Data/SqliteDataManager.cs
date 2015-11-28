@@ -6,9 +6,9 @@ using SpectacledBear.CodeMash2016.WebApi.Models;
 
 namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
-    public class SqliteDataManager
+    internal class SqliteDataManager
     {
-        private IDbConnection _sqliteConnection = PersistentSqliteDatabase.Connection();
+        private IDbConnection _sqliteConnection = PersistentSqliteDatabase.Connection;
 
         public SqliteModel GetModels()
         {

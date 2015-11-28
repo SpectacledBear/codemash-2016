@@ -24,14 +24,17 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             PopulateData();
         }
 
-        internal static IDbConnection Connection()
+        internal static IDbConnection Connection
         {
-            if (_database == null)
+            get
             {
-                Initialize();
-            }
+                if (_database == null)
+                {
+                    Initialize();
+                }
 
-            return _database;
+                return _database;
+            }
         }
 
         internal static void Terminate()
