@@ -8,7 +8,8 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
     internal static class PersistentSqliteDatabase
     {
         private const string CONNECTION_STRING = "Data Source=:memory:";
-        private const string CREATE_SCRIPT = @"Data\CreateTable.sql";
+        private const string CREATE_SCRIPT = @"Data\CreateSchema.sql";
+        private const string DATA_SCRIPT = @"Data\CreateHobbits.sql";
 
         private static SQLiteConnection _database = null;
 
@@ -50,10 +51,23 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         #region Private methods
         private static void PopulateData()
         {
-            string query = LoadQueryFromFile(CREATE_SCRIPT);
-            SQLiteCommand command = new SQLiteCommand(query, _database);
+            using (IDbCommand command = _database.CreateCommand())
+            {
+                string query = LoadQueryFromFile(CREATE_SCRIPT);
+                command.CommandText = query;
+                command.ExecuteNonQuery();
+            }
 
-            int result = command.ExecuteNonQuery();
+            string file = LoadQueryFromFile(DATA_SCRIPT);
+            string[] queries = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(string query in queries)
+            {
+                using (IDbCommand command = _database.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         private static string LoadQueryFromFile(string filename)
