@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Data;
 
 using SpectacledBear.CodeMash2016.WebApi.Models;
 
@@ -8,7 +8,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
     public class SqliteDataManager
     {
-        private SQLiteConnection _sqliteConnection = PersistentSqliteDatabase.Connection();
+        private IDbConnection _sqliteConnection = PersistentSqliteDatabase.Connection();
 
         public SqliteModel GetModels()
         {
@@ -16,16 +16,17 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             List<string> tables = new List<string>();
 
             string versionQuery = "SELECT SQLITE_VERSION()";
-            using (SQLiteCommand command = new SQLiteCommand(versionQuery, _sqliteConnection))
+            using (IDbCommand command = _sqliteConnection.CreateCommand())
             {
+                command.CommandText = versionQuery;
                 version = Convert.ToString(command.ExecuteScalar());
-
             }
 
             string tableQuery = "SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY 1";
-            using (SQLiteCommand command = new SQLiteCommand(tableQuery, _sqliteConnection))
+            using (IDbCommand command = _sqliteConnection.CreateCommand())
             {
-                using (SQLiteDataReader reader = command.ExecuteReader())
+                command.CommandText = tableQuery;
+                using (IDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {

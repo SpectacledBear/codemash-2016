@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 
@@ -15,12 +16,15 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         {
             _database = new SQLiteConnection(CONNECTION_STRING);
 
-            _database.Open();
+            if(_database.State != ConnectionState.Open)
+            {
+                _database.Open();
+            }
 
             PopulateData();
         }
 
-        internal static SQLiteConnection Connection()
+        internal static IDbConnection Connection()
         {
             if (_database == null)
             {
@@ -32,7 +36,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
         internal static void Terminate()
         {
-            if (_database != null && _database.State == System.Data.ConnectionState.Open)
+            if (_database != null && _database.State == ConnectionState.Open)
             {
                 _database.Close();
             }
@@ -40,6 +44,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             _database = null;
         }
 
+        #region Private methods
         private static void PopulateData()
         {
             string query = LoadQueryFromFile(CREATE_SCRIPT);
@@ -55,5 +60,6 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
             return query;
         }
+        #endregion
     }
 }
