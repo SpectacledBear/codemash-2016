@@ -1,28 +1,42 @@
 ﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 
 namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
-    internal static class SqliteHandler
+    internal static class PersistentSqliteDatabase
     {
         private const string CONNECTION_STRING = "Data Source=:memory:";
         private const string CREATE_SCRIPT = @"Data\CreateTable.sql";
 
         private static SQLiteConnection _database = null;
 
-        internal static void CreateDatabase()
+        internal static void Initialize()
         {
             _database = new SQLiteConnection(CONNECTION_STRING);
 
-            _database.Open();
+            if(_database.State != ConnectionState.Open)
+            {
+                _database.Open();
+            }
 
             PopulateData();
         }
 
-        internal static void DestroyDatabase()
+        internal static IDbConnection Connection()
         {
-            if (_database != null && _database.State == System.Data.ConnectionState.Open)
+            if (_database == null)
+            {
+                Initialize();
+            }
+
+            return _database;
+        }
+
+        internal static void Terminate()
+        {
+            if (_database != null && _database.State == ConnectionState.Open)
             {
                 _database.Close();
             }
@@ -30,16 +44,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             _database = null;
         }
 
-        internal static SQLiteConnection GetConnection()
-        {
-            if(_database == null)
-            {
-                CreateDatabase();
-            }
-
-            return _database;
-        }
-
+        #region Private methods
         private static void PopulateData()
         {
             string query = LoadQueryFromFile(CREATE_SCRIPT);
@@ -55,5 +60,6 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
             return query;
         }
+        #endregion
     }
 }

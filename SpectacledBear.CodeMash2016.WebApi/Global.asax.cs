@@ -16,12 +16,12 @@ namespace SpectacledBear.CodeMash2016.WebApi
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
-            SqliteHandler.CreateDatabase();
+            PersistentSqliteDatabase.Initialize();
         }
 
         protected void Application_End()
         {
-            SqliteHandler.DestroyDatabase();
+            PersistentSqliteDatabase.Terminate();
         }
     }
 }
