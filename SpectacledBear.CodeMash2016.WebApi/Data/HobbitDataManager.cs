@@ -11,15 +11,11 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
         public bool DeleteHobbit(long hobbitId)
         {
-            string query = "DELETE FROM Hobbits WHERE rowid=@ID";
-
             using (IDbCommand command = _database.CreateCommand())
             {
+                string query = "DELETE FROM Hobbits WHERE rowid=@ID";
                 command.CommandText = query;
-                IDbDataParameter parameter = command.CreateParameter();
-                parameter.ParameterName = "@ID";
-                parameter.Value = hobbitId;
-                command.Parameters.Add(parameter);
+                command.Parameters.Add(CreateCommandParameter("@ID", hobbitId, command));
 
                 int result = command.ExecuteNonQuery();
                 if (result > 0) return true;
@@ -30,11 +26,12 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
         public IEnumerable<Hobbit> GetAllHobbits()
         {
-            string query = "SELECT Name, FamilyName, BirthYear, DeathYear, rowid FROM Hobbits ORDER BY rowid";
             List<Hobbit> hobbits = new List<Hobbit>();
 
             using (IDbCommand command = _database.CreateCommand())
             {
+                string query = "SELECT Name, FamilyName, BirthYear, DeathYear, rowid " +
+                    "FROM Hobbits ORDER BY rowid";
                 command.CommandText = query;
 
                 using (IDataReader reader = command.ExecuteReader())
@@ -60,43 +57,49 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         {
             if (hobbit.Name == null) return null;
 
-            string columns = string.Empty;
-            string values = string.Empty;
-
-            columns += "Name";
-            values += string.Format("'{0}'", hobbit.Name);
-
-            if (!string.IsNullOrEmpty(hobbit.FamilyName))
-            {
-                columns += ",FamilyName";
-                values += string.Format(",'{0}'", hobbit.FamilyName);
-            }
-
-            if (hobbit.BirthYear != default(int))
-            {
-                columns += ",BirthYear";
-                values += string.Format(",'{0}'", hobbit.BirthYear);
-            }
-
-            if (hobbit.DeathYear != default(int))
-            {
-                columns += ",DeathYear";
-                values += string.Format(",'{0}'", hobbit.DeathYear);
-            }
-
-            string query = string.Format("INSERT INTO Hobbits ({0}) VALUES ({1})", columns, values);
-
             int affectedRows;
+
             using (IDbCommand command = _database.CreateCommand())
             {
+                string columns = string.Empty;
+                string values = string.Empty;
+                List<IDbDataParameter> parameters = new List<IDbDataParameter>();
+
+                columns += "Name";
+                values += "@Name";
+                parameters.Add(CreateCommandParameter("@Name", hobbit.Name, command));
+
+                if (!string.IsNullOrEmpty(hobbit.FamilyName))
+                {
+                    columns += ",FamilyName";
+                    values += ",@FamilyName";
+                    parameters.Add(CreateCommandParameter("@FamilyName", hobbit.FamilyName, command));
+                }
+
+                if (hobbit.BirthYear != default(int))
+                {
+                    columns += ",BirthYear";
+                    values += ",@BirthYear";
+                    parameters.Add(CreateCommandParameter("@BirthYear", hobbit.BirthYear, command));
+                }
+
+                if (hobbit.DeathYear != default(int))
+                {
+                    columns += ",DeathYear";
+                    values += ",@DeathYear";
+                    parameters.Add(CreateCommandParameter("@DeathYear", hobbit.DeathYear, command));
+                }
+
+                string query = string.Format("INSERT INTO Hobbits ({0}) VALUES ({1})", columns, values);
                 command.CommandText = query;
+                parameters.ForEach(p => command.Parameters.Add(p));
                 affectedRows = command.ExecuteNonQuery();
             }
 
-            if (affectedRows != default(int))
+            if (affectedRows != default(int))   // SQLite row IDs start at 1.
             {
                 long hobbitId;
-                if (TryGetHobbitId(hobbit, out hobbitId))   // SQLite row IDs start at 1.
+                if (TryGetHobbitId(hobbit, out hobbitId))
                 {
                     Hobbit insertedHobbit = GetHobbit(hobbitId);
                     return insertedHobbit;
@@ -148,29 +151,37 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         {
             if (hobbit.Name == null) return null;
 
-            string query = string.Format("UPDATE Hobbits SET Name='{0}'", hobbit.Name);
-
-            if (!string.IsNullOrEmpty(hobbit.FamilyName))
-            {
-                query += string.Format(",FamilyName='{0}'", hobbit.FamilyName);
-            }
-
-            if (hobbit.BirthYear != default(int))
-            {
-                query += string.Format(",BirthYear={0}", hobbit.BirthYear);
-            }
-
-            if (hobbit.DeathYear != default(int))
-            {
-                query += string.Format(",DeathYear={0}", hobbit.DeathYear);
-            }
-
-            query += string.Format(" WHERE rowid={0}", hobbitId);
-
             int affectedRows;
             using (IDbCommand command = _database.CreateCommand())
             {
+                List<IDbDataParameter> parameters = new List<IDbDataParameter>();
+
+                string query = "UPDATE Hobbits SET Name=@Name";
+                parameters.Add(CreateCommandParameter("@Name", hobbit.Name, command));
+
+                if (!string.IsNullOrEmpty(hobbit.FamilyName))
+                {
+                    query += ",FamilyName=@FamilyName";
+                    parameters.Add(CreateCommandParameter("@FamilyName", hobbit.FamilyName, command));
+                }
+
+                if (hobbit.BirthYear != default(int))
+                {
+                    query += ",BirthYear=@BirthYear";
+                    parameters.Add(CreateCommandParameter("@BirthYear", hobbit.BirthYear, command));
+                }
+
+                if (hobbit.DeathYear != default(int))
+                {
+                    query += ",DeathYear=@DeathYear";
+                    parameters.Add(CreateCommandParameter("@DeathYear", hobbit.DeathYear, command));
+                }
+
+                query += " WHERE rowid=@RowID";
+                parameters.Add(CreateCommandParameter("@RowID", hobbitId, command));
+
                 command.CommandText = query;
+                parameters.ForEach(p => command.Parameters.Add(p));
                 affectedRows = command.ExecuteNonQuery();
             }
 
@@ -191,10 +202,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             using (IDbCommand command = _database.CreateCommand())
             {
                 command.CommandText = query;
-                IDbDataParameter parameter = command.CreateParameter();
-                parameter.ParameterName = "@ID";
-                parameter.Value = hobbitId;
-                command.Parameters.Add(parameter);
+                command.Parameters.Add(CreateCommandParameter("@ID", hobbitId, command));
                 IDataReader reader = command.ExecuteReader();
 
                 try
@@ -216,6 +224,15 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
                     return null;
                 }
             }
+        }
+
+        private IDbDataParameter CreateCommandParameter(string parameterName, object parameterValue, IDbCommand command)
+        {
+            IDbDataParameter parameter = command.CreateParameter();
+            parameter.ParameterName = parameterName;
+            parameter.Value = parameterValue;
+
+            return parameter;
         }
         #endregion
     }
