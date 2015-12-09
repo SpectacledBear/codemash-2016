@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 
 using SpectacledBear.CodeMash2016.WebApi.Models;
 
@@ -10,16 +11,19 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
     {
         private IDbConnection _sqliteConnection = PersistentSqliteDatabase.Connection;
 
-        public SqliteModel GetModels()
+        public SqliteModel GetMetrics()
         {
             string version = string.Empty;
             List<string> tables = new List<string>();
 
+            Stopwatch stopwatch = new Stopwatch();
             string versionQuery = "SELECT SQLITE_VERSION()";
             using (IDbCommand command = _sqliteConnection.CreateCommand())
             {
                 command.CommandText = versionQuery;
+                stopwatch.Start();
                 version = Convert.ToString(command.ExecuteScalar());
+                stopwatch.Stop();
             }
 
             string tableQuery = "SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY 1";
@@ -36,7 +40,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
                 }
             }
 
-            SqliteModel model = new SqliteModel(version, tables);
+            SqliteModel model = new SqliteModel(version, stopwatch.ElapsedMilliseconds, tables);
 
             return model;
         }

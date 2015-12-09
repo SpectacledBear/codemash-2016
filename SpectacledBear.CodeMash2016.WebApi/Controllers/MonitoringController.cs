@@ -17,7 +17,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
         // GET: api/Monitoring
         public SqliteModel Get()
         {
-            SqliteModel model = _sqliteData.GetModels();
+            SqliteModel model = _sqliteData.GetMetrics();
 
             return model;
         }

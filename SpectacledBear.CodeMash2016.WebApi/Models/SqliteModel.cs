@@ -4,12 +4,14 @@ namespace SpectacledBear.CodeMash2016.WebApi.Models
 {
     public class SqliteModel
     {
-        public string Version { get; private set; }
+        public string SqliteVersion { get; private set; }
+        public long QueryResponseTime { get; private set; }
         public IEnumerable<string> Tables { get; private set; }
 
-        public SqliteModel(string version, IEnumerable<string> tables)
+        public SqliteModel(string version, long queryResponseTime, IEnumerable<string> tables)
         {
-            Version = version;
+            SqliteVersion = version;
+            QueryResponseTime = queryResponseTime;
             Tables = tables;
         }
     }
