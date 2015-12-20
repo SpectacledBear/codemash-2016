@@ -7,11 +7,11 @@ using SpectacledBear.CodeMash2016.WebApi.Models;
 
 namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
-    internal class SqliteDataManager
+    internal class SqliteDataManager : IDataManager<SqliteModel>
     {
         private IDbConnection _sqliteConnection = PersistentSqliteDatabase.Connection;
 
-        public SqliteModel GetMetrics()
+        public IEnumerable<SqliteModel> GetAll()
         {
             string version = string.Empty;
             List<string> tables = new List<string>();
@@ -42,7 +42,32 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 
             SqliteModel model = new SqliteModel(version, stopwatch.ElapsedMilliseconds, tables);
 
-            return model;
+            return new SqliteModel[] { model };
+        }
+
+        public bool TryGet(SqliteModel reference, out long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGet(long id, out SqliteModel result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqliteModel Insert(SqliteModel input)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SqliteModel Update(SqliteModel input, long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(long id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

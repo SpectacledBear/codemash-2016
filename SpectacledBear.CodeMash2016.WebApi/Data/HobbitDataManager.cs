@@ -5,11 +5,11 @@ using SpectacledBear.CodeMash2016.WebApi.Models;
 
 namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
-    internal class HobbitDataManager
+    internal class HobbitDataManager : IDataManager<Hobbit>
     {
         private IDbConnection _database = PersistentSqliteDatabase.Connection;
 
-        public bool DeleteHobbit(long hobbitId)
+        public bool Delete(long hobbitId)
         {
             using (IDbCommand command = _database.CreateCommand())
             {
@@ -24,7 +24,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             return false;
         }
 
-        public IEnumerable<Hobbit> GetAllHobbits()
+        public IEnumerable<Hobbit> GetAll()
         {
             List<Hobbit> hobbits = new List<Hobbit>();
 
@@ -53,7 +53,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             return hobbits;
         }
 
-        public Hobbit InsertHobbit(Hobbit hobbit)
+        public Hobbit Insert(Hobbit hobbit)
         {
             if (hobbit.Name == null) return null;
 
@@ -99,7 +99,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             if (affectedRows != default(int))   // SQLite row IDs start at 1.
             {
                 long hobbitId;
-                if (TryGetHobbitId(hobbit, out hobbitId))
+                if (TryGet(hobbit, out hobbitId))
                 {
                     Hobbit insertedHobbit = GetHobbit(hobbitId);
                     return insertedHobbit;
@@ -109,7 +109,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             return null;
         }
 
-        public bool TryGetHobbit(long hobbitId, out Hobbit hobbit)
+        public bool TryGet(long hobbitId, out Hobbit hobbit)
         {
             hobbit = null;
 
@@ -123,7 +123,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             return false;
         }
 
-        public bool TryGetHobbitId(Hobbit hobbit, out long hobbitId)
+        public bool TryGet(Hobbit hobbit, out long hobbitId)
         {
             hobbitId = default(long);
 
@@ -147,7 +147,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             return false;
         }
 
-        public Hobbit UpdateHobbit(Hobbit hobbit, long hobbitId)
+        public Hobbit Update(Hobbit hobbit, long hobbitId)
         {
             if (hobbit.Name == null) return null;
 

@@ -12,12 +12,22 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
 {
     public class MonitoringController : ApiController
     {
-        SqliteDataManager _sqliteData = new SqliteDataManager();
+        IDataManager<SqliteModel> _monitoringDataManager;
+
+        public MonitoringController()
+        {
+            _monitoringDataManager = new SqliteDataManager();
+        }
+
+        internal MonitoringController(IDataManager<SqliteModel> monitoringDataManager)
+        {
+            _monitoringDataManager = monitoringDataManager;
+        }
 
         // GET: api/Monitoring
-        public SqliteModel Get()
+        public IEnumerable<SqliteModel> Get()
         {
-            SqliteModel model = _sqliteData.GetMetrics();
+            IEnumerable<SqliteModel> model = _monitoringDataManager.GetAll();
 
             return model;
         }

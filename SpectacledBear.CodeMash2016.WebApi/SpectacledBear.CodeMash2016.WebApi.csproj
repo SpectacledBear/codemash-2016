@@ -118,6 +118,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Data\HobbitDataManager.cs" />
+    <Compile Include="Data\IDataManager.cs" />
     <Compile Include="Data\SqliteDataManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

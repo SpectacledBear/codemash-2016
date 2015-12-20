@@ -9,19 +9,29 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
 {
     public class HobbitController : ApiController
     {
-        private HobbitDataManager _hobbitManager = new HobbitDataManager();
+        private IDataManager<Hobbit> _hobbitDataManager;
+
+        public HobbitController()
+        {
+            _hobbitDataManager = new HobbitDataManager();
+        }
+
+        internal HobbitController(IDataManager<Hobbit> hobbitManager)
+        {
+            _hobbitDataManager = hobbitManager;
+        }
 
         // GET: api/Hobbit
         public IEnumerable<Hobbit> Get()
         {
-            return _hobbitManager.GetAllHobbits();
+            return _hobbitDataManager.GetAll();
         }
 
         // GET: api/Hobbit/5
         public Hobbit Get(long id)
         {
             Hobbit hobbit;
-            if (!_hobbitManager.TryGetHobbit(id, out hobbit))
+            if (!_hobbitDataManager.TryGet(id, out hobbit))
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
                 {
@@ -36,7 +46,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
         public Hobbit Post(Hobbit hobbit)
         {
             long hobbitId;
-            if (_hobbitManager.TryGetHobbitId(hobbit, out hobbitId))
+            if (_hobbitDataManager.TryGet(hobbit, out hobbitId))
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
                 {
@@ -44,7 +54,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
                 });
             }
 
-            Hobbit insertedHobbit = _hobbitManager.InsertHobbit(hobbit);
+            Hobbit insertedHobbit = _hobbitDataManager.Insert(hobbit);
 
             if (insertedHobbit == null)
             {
@@ -61,7 +71,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
         public Hobbit Put(long id, Hobbit hobbit)
         {
             long hobbitId;
-            if (!_hobbitManager.TryGetHobbitId(hobbit, out hobbitId))
+            if (!_hobbitDataManager.TryGet(hobbit, out hobbitId))
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
                 {
@@ -77,7 +87,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
                 });
             }
 
-            Hobbit updatedHobbit = _hobbitManager.UpdateHobbit(hobbit, id);
+            Hobbit updatedHobbit = _hobbitDataManager.Update(hobbit, id);
 
             if (updatedHobbit == null)
             {
@@ -94,7 +104,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
         public void Delete(long id)
         {
             Hobbit hobbit;
-            if (!_hobbitManager.TryGetHobbit(id, out hobbit))
+            if (!_hobbitDataManager.TryGet(id, out hobbit))
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest)
                 {
@@ -102,7 +112,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.Controllers
                 });
             }
 
-            if(!_hobbitManager.DeleteHobbit(id))
+            if(!_hobbitDataManager.Delete(id))
             {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
