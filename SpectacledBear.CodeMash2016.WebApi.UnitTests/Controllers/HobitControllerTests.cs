@@ -36,7 +36,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Get_ReturnsSpecifiedHobbit()
+        public void Get_ReturnsSingleHobbit()
         {
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
             mockHobbitManager.Setup(m => m.TryGet(ID, out _testHobbit)).Returns(true);
@@ -49,7 +49,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Get_ThrowsExceptionForUnknownId()
+        public void Get_ThrowsException_ForUnknownId()
         {
             Hobbit nullHobbit = null;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -61,7 +61,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Post_ReturnsInsertedHobbit()
+        public void Post_ReturnsHobbit()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -76,7 +76,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Post_ThrowsExceptionIfHobbitAlreadyExists()
+        public void Post_ThrowsException_WhenHobbitAlreadyExists()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -88,7 +88,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Post_ThrowsExceptionIfInsertFails()
+        public void Post_ThrowsException_WhenInsertFails()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -101,7 +101,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Put_ReturnsUpdatedHobbit()
+        public void Put_ReturnsHobbit()
         {
             long someId = ID;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -116,7 +116,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Put_ThrowsExceptionIfHobbitDoesNotExist()
+        public void Put_ThrowsException_WhenHobbitDoesNotExist()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -128,7 +128,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Put_ThrowsExceptionIfExistingHobbitIdMismatchesIdProvided()
+        public void Put_ThrowsExceptio_WhenExistingHobbitIdMismatchesIdProvided()
         {
             long someId = 1;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -140,7 +140,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Put_ThrowsExceptionIfUpdateFails()
+        public void Put_ThrowsException_WhenUpdateFails()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -168,7 +168,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Delete_ThrowsExceptionIfHobbitDoesNotExist()
+        public void Delete_ThrowsException_WhenHobbitDoesNotExist()
         {
             long someId;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();
@@ -180,7 +180,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         }
 
         [Fact]
-        public void Delete_ThrowsExceptionIfDeleteFails()
+        public void Delete_ThrowsException_WhenDeleteFails()
         {
             Hobbit someHobbit;
             Mock<IDataManager<Hobbit>> mockHobbitManager = new Mock<IDataManager<Hobbit>>();

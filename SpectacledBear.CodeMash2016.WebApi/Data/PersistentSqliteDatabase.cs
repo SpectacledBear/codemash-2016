@@ -11,58 +11,45 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         private const string CREATE_SCRIPT = @"Data\CreateSchema.sql";
         private const string DATA_SCRIPT = @"Data\CreateHobbits.sql";
 
-        private static SQLiteConnection _database = null;
+        private static SQLiteConnection _connection = null;
 
         internal static void Initialize()
         {
-            _database = new SQLiteConnection(CONNECTION_STRING);
+            _connection = new SQLiteConnection(CONNECTION_STRING);
 
-            if(_database.State != ConnectionState.Open)
+            if(_connection.State != ConnectionState.Open)
             {
-                _database.Open();
+                _connection.Open();
             }
 
-            PopulateData();
+            using (IDbCommand command = _connection.CreateCommand())
+            {
+                string query = LoadQueryFromFile(CREATE_SCRIPT);
+                command.CommandText = query;
+                command.ExecuteNonQuery();
+            }
         }
 
         internal static IDbConnection Connection
         {
             get
             {
-                if (_database == null)
+                if (_connection == null)
                 {
                     Initialize();
                 }
 
-                return _database;
+                return _connection;
             }
         }
 
-        internal static void Terminate()
+        internal static void PopulateData()
         {
-            if (_database != null && _database.State == ConnectionState.Open)
-            {
-                _database.Close();
-            }
-
-            _database = null;
-        }
-
-        #region Private methods
-        private static void PopulateData()
-        {
-            using (IDbCommand command = _database.CreateCommand())
-            {
-                string query = LoadQueryFromFile(CREATE_SCRIPT);
-                command.CommandText = query;
-                command.ExecuteNonQuery();
-            }
-
             string file = LoadQueryFromFile(DATA_SCRIPT);
             string[] queries = file.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach(string query in queries)
+            foreach (string query in queries)
             {
-                using (IDbCommand command = _database.CreateCommand())
+                using (IDbCommand command = _connection.CreateCommand())
                 {
                     command.CommandText = query;
                     command.ExecuteNonQuery();
@@ -70,6 +57,17 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
             }
         }
 
+        internal static void Terminate()
+        {
+            if (_connection != null && _connection.State == ConnectionState.Open)
+            {
+                _connection.Close();
+            }
+
+            _connection = null;
+        }
+
+        #region Private methods
         private static string LoadQueryFromFile(string filename)
         {
             string queryFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);

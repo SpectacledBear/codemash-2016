@@ -7,7 +7,17 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
 {
     internal class HobbitDataManager : IDataManager<Hobbit>
     {
-        private IDbConnection _database = PersistentSqliteDatabase.Connection;
+        private IDbConnection _database;
+
+        internal HobbitDataManager()
+        {
+            _database = PersistentSqliteDatabase.Connection;
+        }
+
+        internal HobbitDataManager(IDbConnection connection)
+        {
+            _database = connection;
+        }
 
         public bool Delete(long hobbitId)
         {
@@ -39,10 +49,10 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
                     while (reader.Read())
                     {
                         string name = reader.GetString(0);
-                        string family = reader.GetString(1);
-                        int birth = reader.GetInt32(2);
-                        int death = reader.GetInt32(3);
-                        long id = reader.GetInt64(4);
+                        string family = (!reader.IsDBNull(1)) ? reader.GetString(1) : default(string);
+                        int birth = (!reader.IsDBNull(2)) ? reader.GetInt32(2) : default(int);
+                        int death = (!reader.IsDBNull(3)) ? reader.GetInt32(3) : default(int);
+                        long id = (!reader.IsDBNull(4)) ? reader.GetInt64(4) : default(long);
 
                         Hobbit hobbit = new Hobbit(name, family, birth, death, id);
                         hobbits.Add(hobbit);
@@ -210,10 +220,10 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
                     reader.Read();
 
                     string name = reader.GetString(0);
-                    string family = reader.GetString(1);
-                    int birth = reader.GetInt32(2);
-                    int death = reader.GetInt32(3);
-                    long id = reader.GetInt64(4);
+                    string family = (!reader.IsDBNull(1)) ? reader.GetString(1) : default(string);
+                    int birth = (!reader.IsDBNull(2)) ? reader.GetInt32(2) : default(int);
+                    int death = (!reader.IsDBNull(3)) ? reader.GetInt32(3) : default(int);
+                    long id = (!reader.IsDBNull(4)) ? reader.GetInt64(4) : default(long);
 
                     Hobbit hobbit = new Hobbit(name, family, birth, death, id);
 

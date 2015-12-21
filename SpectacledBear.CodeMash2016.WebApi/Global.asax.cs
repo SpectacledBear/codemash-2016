@@ -17,6 +17,7 @@ namespace SpectacledBear.CodeMash2016.WebApi
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             PersistentSqliteDatabase.Initialize();
+            PersistentSqliteDatabase.PopulateData();
         }
 
         protected void Application_End()

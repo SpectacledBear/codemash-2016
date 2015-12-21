@@ -37,7 +37,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Models
         }
 
         [Fact]
-        public void Tables_WihtoutValus_ReturnsSpeifiedValue()
+        public void Tables_WithoutValues_ReturnsSpeifiedValue()
         {
             string[] tables = new string[0];
 
