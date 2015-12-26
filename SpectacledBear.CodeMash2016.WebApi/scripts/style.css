@@ -1,0 +1,12 @@
+﻿body {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: solid thin black;
+    padding: 10px;
+}
