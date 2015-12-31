@@ -10,12 +10,15 @@
 
         internal bool CheckManifest { get; }
 
-        internal ManifestConfiguration(string rootDirectory, string manifestFilePath, bool buildManifest, bool checkManifest)
+        internal string ReportFilePath { get; }
+
+        internal ManifestConfiguration(string rootDirectory, string manifestFilePath, bool buildManifest, bool checkManifest, string reportFilePath)
         {
             RootDirectory = rootDirectory;
             ManifestFilePath = manifestFilePath;
             BuildManifest = buildManifest;
             CheckManifest = checkManifest;
+            ReportFilePath = reportFilePath;
         }
     }
 }

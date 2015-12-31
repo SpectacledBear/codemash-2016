@@ -10,6 +10,7 @@ namespace SpectacledBear.CodeMash2016.Manifest
     {
         private const string DIRECTORY_ARG = "directory";
         private const string MANIFEST_FILE_ARG = "file";
+        private const string REPORT_FILE_ARG = "report";
         private const string BUILD_ARG = "build";
         private const string CHECK_ARG = "check";
 
@@ -26,13 +27,13 @@ namespace SpectacledBear.CodeMash2016.Manifest
             string rootDirPath = Path.GetFullPath(config.RootDirectory);
             string manifestFilePath = Path.GetFullPath(config.ManifestFilePath);
 
-            if(!Directory.Exists(rootDirPath))
+            if (!Directory.Exists(rootDirPath))
             {
                 Console.WriteLine("\nThe directory specified does not exist.");
                 return -1;
             }
 
-            if(config.CheckManifest && !File.Exists(manifestFilePath))
+            if (config.CheckManifest && !File.Exists(manifestFilePath))
             {
                 Console.WriteLine("\nThe manifest file does not exist.");
                 return -1;
@@ -47,6 +48,8 @@ namespace SpectacledBear.CodeMash2016.Manifest
 
             if (config.CheckManifest)
             {
+                string reportFilePath = Path.GetFullPath(config.ReportFilePath);
+
                 FileManifest baselineManifest = ManifestReader.ReadManifest(manifestFilePath);
                 FileManifest currentManifest = FileManifestFactory.Create(rootDirPath);
 
@@ -78,7 +81,7 @@ namespace SpectacledBear.CodeMash2016.Manifest
                 List<FileManifestItem> differingItems = baselineManifest.Items.Where(i => differingFiles.Any(f => i.File == f)).ToList();
 
                 List<Tuple<FileManifestItem, FileManifestItem>> diffTuples = new List<Tuple<FileManifestItem, FileManifestItem>>();
-                foreach(string differingFile in differingFiles)
+                foreach (string differingFile in differingFiles)
                 {
                     FileManifestItem baselineItem = baselineManifest.Items.First(i => i.File == differingFile);
                     FileManifestItem currentItem = currentManifest.Items.First(i => i.File == differingFile);
@@ -94,7 +97,7 @@ namespace SpectacledBear.CodeMash2016.Manifest
                 };
 
                 // TODO: This needs to be an argument.
-                FileWriter.WriteReport(report, "report.json");
+                FileWriter.WriteReport(report, reportFilePath);
             }
 
             return 0;
@@ -103,14 +106,14 @@ namespace SpectacledBear.CodeMash2016.Manifest
         private static ManifestConfiguration ParseArguments(string[] args)
         {
             // Remove any dash prefix from arguments.
-            for(int i = 0; i < args.Length; i++)
+            for (int i = 0; i < args.Length; i++)
             {
-                if(args[i].StartsWith("-"))
+                if (args[i].StartsWith("-"))
                 {
                     string currentArg = args[i];
-                    for(int j = 0; j < currentArg.Length; j++)
+                    for (int j = 0; j < currentArg.Length; j++)
                     {
-                        if(currentArg.Substring(j, 1) != "-")
+                        if (currentArg.Substring(j, 1) != "-")
                         {
                             args[i] = currentArg.Substring(j);
                             break;
@@ -121,10 +124,12 @@ namespace SpectacledBear.CodeMash2016.Manifest
 
             string rootDirectory = null;
             string manifestFilePath = null;
+            string reportFilePath = null;
             bool build = false;
             bool check = false;
 
-            if (args.Contains(DIRECTORY_ARG)) {
+            if (args.Contains(DIRECTORY_ARG))
+            {
                 int directoryArgIndex = Array.IndexOf(args, DIRECTORY_ARG);
 
                 if (directoryArgIndex != (args.Length - 1))
@@ -143,6 +148,16 @@ namespace SpectacledBear.CodeMash2016.Manifest
                 }
             }
 
+            if (args.Contains(REPORT_FILE_ARG))
+            {
+                int fileArgIndex = Array.IndexOf(args, REPORT_FILE_ARG);
+
+                if (fileArgIndex != (args.Length - 1))
+                {
+                    reportFilePath = args[fileArgIndex + 1];
+                }
+            }
+
             if (args.Contains(BUILD_ARG))
             {
                 build = true;
@@ -153,15 +168,20 @@ namespace SpectacledBear.CodeMash2016.Manifest
                 check = true;
             }
 
-            ManifestConfiguration config = new ManifestConfiguration(rootDirectory, manifestFilePath, build, check);
+            ManifestConfiguration config = new ManifestConfiguration(rootDirectory, manifestFilePath, build, check, reportFilePath);
 
             return config;
         }
 
-        private static bool ValidateConfiguration (ManifestConfiguration config)
+        private static bool ValidateConfiguration(ManifestConfiguration config)
         {
             if (string.IsNullOrEmpty(config.RootDirectory) ||
                 string.IsNullOrEmpty(config.ManifestFilePath))
+            {
+                return false;
+            }
+
+            if (config.CheckManifest && string.IsNullOrEmpty(config.ReportFilePath))
             {
                 return false;
             }
@@ -187,6 +207,7 @@ namespace SpectacledBear.CodeMash2016.Manifest
             Console.WriteLine("\t--file       The manifest file to create or use in comparison.");
             Console.WriteLine("\t--build      Instructs the application to build a manifest file.");
             Console.WriteLine("\t--check      Instructs the application to check a directory against a manifest file.");
+            Console.WriteLine("\t--report     The report file to create. Only used with --check.");
             Console.WriteLine("\tNote: The build and check arguments cannot be used together.");
         }
     }
