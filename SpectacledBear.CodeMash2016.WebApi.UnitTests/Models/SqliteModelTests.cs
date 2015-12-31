@@ -9,28 +9,46 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Models
     public class SqliteModelTests
     {
         [Theory]
-        [MemberData("VersionData")]
-        public void SqliteVersion_ReturnsSpecifiedValue(string version)
+        [MemberData("ResultsData")]
+        public void Result_ReturnsSpecifiedValue(string result)
         {
-            SqliteModel model = new SqliteModel(version, 0, new string[0]);
+            SqliteModel model = new SqliteModel(null, 0, new string[0], 0, result);
 
-            Assert.Equal(version, model.SqliteVersion);
+            Assert.Equal(result, model.Result);
         }
 
         [Theory]
-        [MemberData("TimesData")]
+        [MemberData("LongData")]
         public void QueryResponseTime_ReturnsSpecifiedValue(long time)
         {
-            SqliteModel model = new SqliteModel(null, time, new string[0]);
+            SqliteModel model = new SqliteModel(null, time, new string[0], 0, null);
 
             Assert.Equal(time, model.QueryResponseTime);
+        }
+
+        [Theory]
+        [MemberData("LongData")]
+        public void TotalChanges_ReturnsSpecifiedValue(long changes)
+        {
+            SqliteModel model = new SqliteModel(null, 0, new string[0], changes, null);
+
+            Assert.Equal(changes, model.TotalChanges);
+        }
+
+        [Theory]
+        [MemberData("VersionData")]
+        public void SqliteVersion_ReturnsSpecifiedValue(string version)
+        {
+            SqliteModel model = new SqliteModel(version, 0, new string[0], 0, null);
+
+            Assert.Equal(version, model.SqliteVersion);
         }
 
         [Theory]
         [MemberData("TablesData")]
         public void Tables_WithValues_ReturnsSpecifiedValue(string[] tables, int count)
         {
-            SqliteModel model = new SqliteModel(null, 0, tables);
+            SqliteModel model = new SqliteModel(null, 0, tables, 0, null);
 
             Assert.Equal(count, model.Tables.Count());
             Assert.Equal(tables[0], model.Tables.First());
@@ -41,7 +59,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Models
         {
             string[] tables = new string[0];
 
-            SqliteModel model = new SqliteModel(null, 0, tables);
+            SqliteModel model = new SqliteModel(null, 0, tables, 0, null);
 
             Assert.Equal(0, model.Tables.Count());
         }
@@ -61,7 +79,7 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Models
             }
         }
 
-        public static IEnumerable<object[]> TimesData
+        public static IEnumerable<object[]> LongData
         {
             get
             {
@@ -84,6 +102,21 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Models
                 {
                     new object[] { new string[] { "some table" }, 1 },
                     new object[] { new string[] { " some table", "some other table" }, 2 },
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> ResultsData
+        {
+            get
+            {
+                return new[]
+                {
+                    new object[] { "pass" },
+                    new object[] { null },
+                    new object[] { "" },
+                    new object[] { "some result" },
+                    new object[] { "Bacon ipsum dolor amet chicken ham meatball spare ribs salami, capicola beef ribs." }   // Generated with baconipsum.com
                 };
             }
         }

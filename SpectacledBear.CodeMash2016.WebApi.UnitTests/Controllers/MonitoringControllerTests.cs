@@ -13,8 +13,10 @@ namespace SpectacledBear.CodeMash2016.WebApi.UnitTests.Controllers
         private const string VERSION = "Some version";
         private const long RESPONSE_TIME = 1;
         private const string TABLE = "Some table";
+        private const long CHANGES = 2;
+        private const string RESULT = "Some result";
 
-        private readonly SqliteModel _testSqliteModel = new SqliteModel(VERSION, RESPONSE_TIME, new string[] { TABLE });
+        private readonly SqliteModel _testSqliteModel = new SqliteModel(VERSION, RESPONSE_TIME, new string[] { TABLE }, CHANGES, RESULT);
 
         [Fact]
         public void Get_ReturnsAllMonitoringItems()

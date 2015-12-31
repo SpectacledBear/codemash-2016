@@ -15,6 +15,8 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
         {
             string version = string.Empty;
             List<string> tables = new List<string>();
+            long totalChanges = -1;
+            string result = "pass";
 
             Stopwatch stopwatch = new Stopwatch();
             string versionQuery = "SELECT SQLITE_VERSION()";
@@ -40,7 +42,19 @@ namespace SpectacledBear.CodeMash2016.WebApi.Data
                 }
             }
 
-            SqliteModel model = new SqliteModel(version, stopwatch.ElapsedMilliseconds, tables);
+            string changesQuery = "SELECT TOTAL_CHANGES()";
+            using (IDbCommand command = _sqliteConnection.CreateCommand())
+            {
+                command.CommandText = changesQuery;
+                totalChanges = (long)command.ExecuteScalar();
+            }
+
+            if (string.IsNullOrEmpty(version) || tables.Count == 0)
+            {
+                result = "fail";
+            }
+
+            SqliteModel model = new SqliteModel(version, stopwatch.ElapsedMilliseconds, tables, totalChanges, result);
 
             return new SqliteModel[] { model };
         }
