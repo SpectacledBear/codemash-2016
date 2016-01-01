@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using SpectacledBear.CodeMash2016.Manifest.Helpers;
 using SpectacledBear.CodeMash2016.Manifest.Models;
 
