@@ -1,0 +1,46 @@
+{
+  "provider": {
+    "name": "Hobbit API"
+  },
+  "consumer": {
+    "name": "Consumer"
+  },
+  "interactions": [
+    {
+      "description": "A GET request to retrieve the hobbits",
+      "provider_state": "There are hobbits",
+      "request": {
+        "method": "get",
+        "path": "/api/hobbit",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": [
+          {
+            "Name": "Frodo Baggins",
+            "FamilyName": "Baggins",
+            "BirthYear": 1368,
+            "DeathYear": 1421,
+            "Id": 1
+          },
+          {
+            "Name": "Samwise Gamgee",
+            "FamilyName": "Gamgee",
+            "BirthYear": 1380,
+            "DeathYear": 1482,
+            "Id": 2
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecificationVersion": "1.1.0"
+  }
+}
