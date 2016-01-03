@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectacledBear.CodeMash2016
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectacledBear.CodeMash2016.WebApi.ContractTests", "SpectacledBear.CodeMash2016.WebApi.ContractTests\SpectacledBear.CodeMash2016.WebApi.ContractTests.csproj", "{7E8A5CEC-8EBF-4EE9-B32A-E1006F5764EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectacledBear.CodeMash2016.WebApi.AcceptanceTests", "SpectacledBear.CodeMash2016.WebApi.AcceptanceTests\SpectacledBear.CodeMash2016.WebApi.AcceptanceTests.csproj", "{2F2F5FF8-2AF4-47E8-91A8-6CE8C5DCB667}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{7E8A5CEC-8EBF-4EE9-B32A-E1006F5764EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E8A5CEC-8EBF-4EE9-B32A-E1006F5764EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E8A5CEC-8EBF-4EE9-B32A-E1006F5764EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F2F5FF8-2AF4-47E8-91A8-6CE8C5DCB667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F2F5FF8-2AF4-47E8-91A8-6CE8C5DCB667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F2F5FF8-2AF4-47E8-91A8-6CE8C5DCB667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F2F5FF8-2AF4-47E8-91A8-6CE8C5DCB667}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
